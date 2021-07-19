@@ -1,5 +1,7 @@
 package com.intenthq.challenge
 
+import scala.collection.immutable.Queue
+
 case class Node(value: Int, edges: List[Node] = List.empty)
 
 object SConnectedGraph {
@@ -14,6 +16,21 @@ object SConnectedGraph {
   // run(a, b) == true
   // run(a, c) == true
   // run(b, d) == false
-  def run(source: Node, target: Node): Boolean = ???
 
+
+
+  def run(source: Node, target: Node): Boolean = {
+    var result = false
+    var visited = Set.empty[Node]
+    var q = Queue(source)
+    while (q.nonEmpty && !result) {
+      val (vertex, rest) = q.dequeue
+      if (vertex.edges.contains(target) || vertex == target) {
+        result = true
+      }
+      q = rest.enqueueAll(vertex.edges.filterNot(visited.contains))
+      visited = (vertex.edges ++ visited).toSet
+    }
+    result
+  }
 }

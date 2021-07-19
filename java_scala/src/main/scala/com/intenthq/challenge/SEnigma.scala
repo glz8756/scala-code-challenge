@@ -22,6 +22,25 @@ object SEnigma {
   // Following the above rules, the message would be: “1N73N7 HQ”
   // Check the tests for some other (simpler) examples.
 
-  def deciphe(map: Map[Int, Char])(message: List[Int]): String = ???
+  def deciphe(map: Map[Int, Char])(in: List[Int]): String ={
+    val( decodeMsg, restMsg )= loop(map)(in)
+    restMsg match {
+      case Nil => decodeMsg
+      case head :: tail => decodeMsg + deciphe(map)(restMsg)
+    }
+  }
 
+  def loop(map: Map[Int, Char])(in: List[Int]):(String, List[Int]) = {
+    val maxLen = map.keys.map(_.toString.length).max
+    var decodeMsg = in.head.toString
+    var restMsg = in.tail
+    for (i <- 1 to maxLen){
+      val newChars = (in.slice(0,i).mkString).toInt
+      if (map.contains(newChars )) {
+        decodeMsg = map(newChars).toString
+        restMsg = in.slice(i,in.length )
+      }
+    }
+    (decodeMsg.toString, restMsg)
+  }
 }
